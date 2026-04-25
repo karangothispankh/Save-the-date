@@ -24,6 +24,7 @@ body {
 
   scroll-snap-type:y mandatory;
   scroll-behavior:smooth;
+-webkit-tap-highlight-color: transparent;
 }  
 
 .section {  
@@ -35,89 +36,214 @@ body {
   scroll-snap-align:start;  
 }  
 
-#envelopeScreen {  
-  position:fixed;  
-  width:100%;  
-  height:100vh;  
-  display:flex;  
-  justify-content:center;  
-  align-items:center;  
-  z-index:999;  
-  background:
-    radial-gradient(circle at center, #3a1325, #0d0508);  
-}  
+.envelope{
+position:fixed;
+inset:0;
+width:100vw;
+height:100vh;
+cursor:pointer;
+-webkit-tap-highlight-color: transparent;
+user-select:none;
+}
 
-.envelope {  
-  width:360px;  
-  height:240px;  
-  position:relative;  
-  cursor:pointer;  
-  animation:breath 3s infinite;  
-}  
+/* REAL RED PAPER ENVELOPE */
+.envelope-body{
+position:absolute;
+inset:0;
 
-.envelope::before {  
-  content:"";  
-  position:absolute;  
-  inset:-30px;  
-  border-radius:20px;  
-  background:radial-gradient(circle, rgba(202,168,90,0.35), transparent 70%);  
-  filter:blur(20px);  
-  z-index:-1;  
-}  
+background:
+repeating-linear-gradient(
+45deg,
+rgba(255,255,255,.03) 0px,
+rgba(255,255,255,.03) 2px,
+transparent 2px,
+transparent 6px
+),
+linear-gradient(
+145deg,
+#7a1028,
+#5e0d1d,
+#431016
+);
 
-@keyframes breath { 50% { transform:scale(1.05); } }  
+box-shadow:
+inset 0 2px 2px rgba(255,255,255,.08),
+inset 0 -12px 22px rgba(0,0,0,.35);
+}
 
-.envelope-body {  
-  width:100%;  
-  height:100%;  
-  border-radius:14px;  
-  background:linear-gradient(145deg,#f5e6a3,#e0c46c,#caa85a,#b8954d);  
-  box-shadow:  
-    inset 0 2px 6px rgba(255,255,255,0.7),  
-    inset 0 -6px 12px rgba(0,0,0,0.3),  
-    0 20px 50px rgba(0,0,0,0.3);  
-}  
+/* center fold line */
+.envelope-body:before{
+content:"";
+position:absolute;
+left:50%;
+top:42%;
+height:58%;
+width:2px;
+background:rgba(255,220,180,.3);
+transform:translateX(-50%);
+}
 
-.envelope-body::after {  
-  content:"";  
-  position:absolute;  
-  inset:0;  
-  border-radius:14px;  
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);  
-  animation:shine 4s infinite;  
-}  
+/* bottom triangular fold */
+.envelope-body:after{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:58%;
+clip-path:polygon(0 0,50% 100%,100% 0);
+border-top:2px solid rgba(255,220,180,.35);
+}
 
-@keyframes shine {  
-  0% { transform:translateX(-100%); }  
-  100% { transform:translateX(100%); }  
-}  
+/* BASE FLAPS */
+.flap{
+position:absolute;
+transition:1.2s;
+}
 
-.flap {  
-  position:absolute;  
-  width:100%;  
-  height:60%;  
-  background:linear-gradient(145deg,#e0c46c,#caa85a,#b8954d);  
-  clip-path:polygon(0 0,100% 0,50% 100%);  
-  transform-origin:top;  
-  transition:1.2s;  
-}  
+/* left flap */
+/* LEFT FOLD */
+.flap-left{
+left:0;
+bottom:0;
+width:50%;
+height:100%;
 
-.envelope.open .flap { transform:rotateX(180deg); }  
+background:
+linear-gradient(145deg,#7d1025,#5d0d18);
 
+clip-path:polygon(
+0 0,
+100% 50%,
+0 100%
+);
+
+border-right:2px solid rgba(255,220,180,.22);
+
+box-shadow:
+inset -10px 0 18px rgba(0,0,0,.15);
+}
+
+
+/* RIGHT FOLD */
+.flap-right{
+right:0;
+bottom:0;
+width:50%;
+height:100%;
+
+background:
+linear-gradient(145deg,#74101f,#521017);
+
+clip-path:polygon(
+100% 0,
+0 50%,
+100% 100%
+);
+
+border-left:2px solid rgba(255,220,180,.22);
+
+box-shadow:
+inset 10px 0 18px rgba(0,0,0,.15);
+}
+
+.flap-top{
+top:0;
+left:0;
+width:100%;
+height:56%;   /* was too long */
+
+background:
+linear-gradient(145deg,#8d1832,#681223);
+
+clip-path:polygon(
+0 0,
+100% 0,
+50% 88%   /* was 100%, shorten tip */
+);
+
+transform-origin:top center;
+z-index:4;
+
+border-bottom:2px solid rgba(255,225,190,.35);
+
+box-shadow:
+inset 0 -10px 18px rgba(0,0,0,.18);
+}
+
+transform-origin:top center;
+z-index:4;
+
+border-bottom:2px solid rgba(255,225,190,.35);
+}
+
+/* sequential opening */
+.envelope.open .flap-left{
+transform:rotateY(-140deg);
+transition-delay:.25s;
+}
+
+.envelope.open .flap-right{
+transform:rotateY(140deg);
+transition-delay:.7s;
+}
+
+.envelope.open .flap-top{
+transform:rotateX(180deg);
+transition-delay:1.15s;
+}
+
+
+/* centered wax seal */
 .seal{
-  position:absolute;
-  width:70px;
-  height:70px;
-  background:radial-gradient(circle,#b30000,#5a0000);
-  border-radius:50%;
+position:fixed;
+left:50%;
+top:46%;
+transform:translate(-50%,-50%);
+width:96px;
+height:96px;
+border-radius:50%;
 
-  top:70%;
-  left:50%;
-  transform:translate(-50%,-50%);
+background:
+radial-gradient(circle at 35% 35%,
+#d4af37,
+#8b5d16 72%);
 
-  display:flex;              /* add */
-  align-items:center;        /* add */
-  justify-content:center;    /* add */
+display:flex;
+align-items:center;
+justify-content:center;
+
+overflow:hidden;
+box-shadow:
+0 10px 30px rgba(0,0,0,.35),
+0 0 0 8px #7a1028; /* masks flap tip behind seal */
+
+
+z-index:1001;
+}
+
+/* crack effect */
+.seal.crack{
+transform:translate(-50%,-50%) scale(.82);
+opacity:0;
+transition:.6s;
+}
+
+.tap-text{
+position:fixed;
+left:50%;
+top:42%;
+transform:translateX(-50%);
+letter-spacing:5px;
+color:#f5d77a;
+animation:tapFloat 3s ease-in-out infinite;
+z-index:1002;
+}
+
+@keyframes tapFloat{
+50%{
+transform:translateX(-50%) translateY(-10px);
+}
 }
 
 .seal-monogram{
@@ -128,14 +254,7 @@ body {
  transform:translateY(-2px); /* tiny optical centering */
 }
 
-.tap-text {  
-  position:absolute;  
-  top:48%;  
-  left:50%;  
-  transform:translate(-50%,-50%);  
-  font-size:0.7rem;  
-  letter-spacing:3px;  
-}  
+
 
 .invite-card {  
   width:92%;  
@@ -428,6 +547,12 @@ canvas {
 #section5{
   min-height:55vh;
 }
+
+#section1,
+#section2{
+  min-height:68vh;
+}
+
 .video-title {
   font-family:'Playfair Display';
   margin-bottom:20px;
@@ -470,6 +595,49 @@ canvas {
   }
 }
 
+#sunGlow{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:3;
+
+opacity:0;
+transform:scale(.2);
+
+background:
+radial-gradient(
+circle at center,
+rgba(255,248,230,.95) 0%,
+rgba(255,223,150,.65) 22%,
+rgba(255,186,90,.35) 50%,
+rgba(255,140,60,.18) 68%,
+transparent 82%
+);
+}
+
+#sunGlow.burst{
+animation:sunriseBurst 1.8s ease-out forwards;
+}
+
+@keyframes sunriseBurst{
+
+0%{
+opacity:0;
+transform:scale(.2);
+}
+
+45%{
+opacity:.9;
+transform:scale(1.35);
+}
+
+100%{
+opacity:0;
+transform:scale(2.8);
+}
+
+}
+
 </style>  
 </head>  
 
@@ -481,10 +649,13 @@ canvas {
 <!-- ✅ ADDED BACKGROUND MUSIC -->
 <audio id="bgMusic" src="music.mp3" loop></audio>
 
+<div id="sunGlow"></div>
 <div id="envelopeScreen">
 <div class="hearts"></div>  
   <div class="envelope" onclick="openEnvelope()">  
-    <div class="flap"></div>  
+    <div class="flap flap-left"></div>
+<div class="flap flap-right"></div>
+<div class="flap flap-top"></div>
     <div class="envelope-body"></div>  
     <div class="tap-text">Tap to Reveal</div>  
     <div class="seal">
@@ -674,31 +845,50 @@ Kandivali West, Mumbai, Maharashtra 400067
 
 <script>  
 function openEnvelope(){
-  document.querySelector(".envelope").classList.add("open");
 
-  // ✅ PLAY BACKGROUND MUSIC HERE
-  const music = document.getElementById("bgMusic");
+const env=document.querySelector(".envelope");
+const seal=document.querySelector(".seal");
 
-music.volume = 0.05;   // very soft start
+/* open flaps immediately */
+env.classList.add("open");
+
+setTimeout(()=>{
+seal.classList.add("crack");
+},150);
+
+/* sunrise after flap starts moving */
+setTimeout(()=>{
+document.getElementById("sunGlow")
+.classList.add("burst");
+
+fireworksBurst();
+
+},900);
+
+
+const music=document.getElementById("bgMusic");
+music.volume=.05;
 music.play();
 
-let vol = 0.05;
+let vol=.05;
 
-let fade = setInterval(()=>{
- if(vol < 0.45){      // final volume level
-   vol += 0.02;
-   music.volume = vol;
- } else{
-   clearInterval(fade);
- }
+let fade=setInterval(()=>{
+if(vol<.45){
+vol+=.02;
+music.volume=vol;
+}else{
+clearInterval(fade);
+}
 },600);
-fireworksBurst()
-  setTimeout(()=>{
-    envelopeScreen.style.display="none";
-    mainContent.style.display="block";
-    initScratch();
-    startCountdown();
-  },1000);
+
+
+setTimeout(()=>{
+envelopeScreen.style.display="none";
+mainContent.style.display="block";
+initScratch();
+startCountdown();
+},2300);
+
 }
 
 function scrollNext(){
